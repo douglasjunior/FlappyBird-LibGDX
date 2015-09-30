@@ -16,7 +16,7 @@ import static com.grupointegrado.flappyBird.Constantes.PIXELS;
 public class Passaro {
 
     public static final String CORPO_PASSARO = "CORPO_PASSARO";
-    private final float TEMPO_PULANDO_MAXIMO = 0.2f;
+    private final float TEMPO_PULANDO_MAXIMO = 0.5f;
 
     private final World world;
     private Body corpo;
@@ -60,7 +60,7 @@ public class Passaro {
         pulando = true;
         if (tempoPulando < TEMPO_PULANDO_MAXIMO) {
             corpo.setLinearVelocity(corpo.getLinearVelocity().x, 0);
-            corpo.applyForceToCenter(0, 300f, false);
+            corpo.applyForceToCenter(0, (5 / delta), false);
         }
     }
 }
