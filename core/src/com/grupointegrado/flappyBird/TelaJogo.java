@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 
 import static com.grupointegrado.flappyBird.Constantes.ESCALA;
 import static com.grupointegrado.flappyBird.Constantes.PIXELS;
@@ -24,14 +25,17 @@ import static com.grupointegrado.flappyBird.Constantes.PIXELS;
  */
 public class TelaJogo extends TelaBase {
 
-    private static final String CORPO_BORDA_BAIXO = "CORPO_BORDA_BAIXO";
+    private static final String CORPO_BORDA = "CORPO_BORDA";
 
     private OrthographicCamera camera;
     private World mundo;
     private Box2DDebugRenderer debug;
     private Passaro passaro;
-    private Body bordaBaixo;
+    private Body borda1;
     private boolean iniciou = false;
+    private float larguraBorda;
+    private float alturaBorda;
+    private Array<Obstaculo> obstaculos = new Array<Obstaculo>();
 
     public TelaJogo(MainGame game) {
         super(game);
@@ -80,19 +84,12 @@ public class TelaJogo extends TelaBase {
     }
 
     private void initPassaro() {
-        passaro = new Passaro(mundo);
+        passaro = new Passaro(mundo, camera);
     }
 
     private void initBordas() {
-        BodyDef def = new BodyDef();
-        def.type = BodyDef.BodyType.StaticBody;
-        def.fixedRotation = true;
-        PolygonShape shape = new PolygonShape();
-        def.position.set(0, 0);
-        shape.setAsBox(camera.viewportWidth / PIXELS, 10 / PIXELS);
-        bordaBaixo = mundo.createBody(def);
-        Fixture fixacao = bordaBaixo.createFixture(shape, 1);
-        fixacao.setUserData(CORPO_BORDA_BAIXO);
+        borda1 = Util.criarCorpo(mundo, BodyDef.BodyType.StaticBody, -larguraBorda, 0);
+        dimensionaBorda();
     }
 
     @Override
@@ -104,12 +101,25 @@ public class TelaJogo extends TelaBase {
         capturaTeclas(delta);
 
         if (iniciou) {
+            atualizarBorda();
+            atualizarObstaculos();
             passaro.atualizar(delta);
             mundo.step(delta, 6, 2);
         }
 
-
         debug.render(mundo, camera.combined.scl(PIXELS));
+    }
+
+    private void atualizarObstaculos() {
+        if (obstaculos.size == 0) {
+            Obstaculo obstaculo = new Obstaculo(mundo, camera);
+            obstaculos.add(obstaculo);
+        }
+    }
+
+    private void atualizarBorda() {
+        Vector2 posicao = passaro.getCorpo().getPosition();
+        borda1.setTransform(posicao.x, 0, 0);
     }
 
     private void atualizarCamera() {
@@ -131,6 +141,18 @@ public class TelaJogo extends TelaBase {
     public void resize(int width, int height) {
         camera.setToOrtho(false, width / ESCALA, height / ESCALA);
         camera.update();
+
+        dimensionaBorda();
+    }
+
+    private void dimensionaBorda() {
+        borda1.getFixtureList().clear();
+        larguraBorda = camera.viewportWidth / ESCALA / PIXELS;
+        alturaBorda = 10 / ESCALA / PIXELS;
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(larguraBorda, alturaBorda);
+        Util.criarForma(borda1, shape, CORPO_BORDA);
+        shape.dispose();
     }
 
     @Override
