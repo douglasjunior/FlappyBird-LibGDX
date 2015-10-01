@@ -1,13 +1,11 @@
 package com.grupointegrado.flappyBird;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.World;
 
-import static com.grupointegrado.flappyBird.Constantes.ESCALA;
 import static com.grupointegrado.flappyBird.Constantes.PIXELS;
 
 /**
@@ -47,6 +45,7 @@ public class Passaro {
         return corpo;
     }
 
+    float menor, maior;
 
     public void atualizar(float delta) {
         if (pulando) {
@@ -55,7 +54,22 @@ public class Passaro {
             tempoPulando = 0;
         }
         pulando = false;
+        atualizarVelocidade(delta);
+        atualizarRotacao();
+    }
+
+    private void atualizarVelocidade(float delta) {
         corpo.setLinearVelocity(70 * delta, corpo.getLinearVelocity().y);
+    }
+
+    private void atualizarRotacao() {
+        if (corpo.getLinearVelocity().y > 0) {
+            corpo.setTransform(corpo.getPosition(), (float) Math.toRadians(15));
+        } else if (corpo.getLinearVelocity().y < 0) {
+            corpo.setTransform(corpo.getPosition(), (float) Math.toRadians(-15));
+        } else {
+            corpo.setTransform(corpo.getPosition(), (float) Math.toRadians(0));
+        }
     }
 
     public void pular(float delta) {

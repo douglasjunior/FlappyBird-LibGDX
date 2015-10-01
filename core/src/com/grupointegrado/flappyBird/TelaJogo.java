@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
@@ -111,9 +110,20 @@ public class TelaJogo extends TelaBase {
     }
 
     private void atualizarObstaculos() {
-        if (obstaculos.size == 0) {
-            Obstaculo obstaculo = new Obstaculo(mundo, camera);
+        Obstaculo ultimoObstaculo = null;
+        if (obstaculos.size > 0) {
+            ultimoObstaculo = obstaculos.peek();
+        }
+        if (obstaculos.size < 3) {
+            Obstaculo obstaculo = new Obstaculo(mundo, camera, ultimoObstaculo);
             obstaculos.add(obstaculo);
+        }
+        for (Obstaculo obstaculo : obstaculos) {
+            float inicioCameraX = (camera.position.x - camera.viewportWidth / 2) / PIXELS;
+            if (inicioCameraX > obstaculo.getX()) {
+                obstaculo.remover();
+                obstaculos.removeValue(obstaculo, true);
+            }
         }
     }
 
@@ -123,10 +133,7 @@ public class TelaJogo extends TelaBase {
     }
 
     private void atualizarCamera() {
-        Vector3 posicao = new Vector3();
-        posicao.x = passaro.getCorpo().getPosition().x * PIXELS;
-        posicao.y = camera.position.y;
-        camera.position.set(posicao);
+        camera.position.x = passaro.getCorpo().getPosition().x * PIXELS;
         camera.update();
     }
 

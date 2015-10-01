@@ -1,6 +1,7 @@
 package com.grupointegrado.flappyBird;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -19,14 +20,15 @@ public class Obstaculo {
 
     private final World mundo;
     private final OrthographicCamera camera;
+    private final Obstaculo ultimoObstaculo;
     private float x, yCima, yBaixo;
-    private Body corpoCima;
-    private Body corpoBaixo;
-    private float largura, alturaCima, alturaBaixo;
+    private Body corpoCima, corpoBaixo;
+    private float largura, altura;
 
-    public Obstaculo(World mundo, OrthographicCamera camera) {
+    public Obstaculo(World mundo, OrthographicCamera camera, Obstaculo ultimoObstaculo) {
         this.mundo = mundo;
         this.camera = camera;
+        this.ultimoObstaculo = ultimoObstaculo;
 
         initPosicao();
         initCorpoCima();
@@ -34,17 +36,25 @@ public class Obstaculo {
     }
 
     private void initPosicao() {
-        x = (camera.viewportWidth / PIXELS)  / 2;
-        yCima = camera.viewportHeight / Constantes.PIXELS;
-        yBaixo = 0;
-        largura = 10 / PIXELS;
-        alturaCima = camera.viewportHeight / Constantes.PIXELS / 2 - DIAMETRO_PASSARO * 1.2f;
-        alturaBaixo = camera.viewportHeight / Constantes.PIXELS / 2 - DIAMETRO_PASSARO * 1.2f;
+        largura = 20 / PIXELS;
+        altura = (camera.viewportHeight / PIXELS);
+
+        float inicialX = 0;
+        if (ultimoObstaculo != null)
+            inicialX = ultimoObstaculo.getX();
+        x = inicialX + (camera.viewportWidth / 2) / PIXELS;
+
+        float parcela = altura / 6;
+
+        int multiplicador = MathUtils.random(1, 4);
+
+        yBaixo = parcela * multiplicador - altura / 2;
+        yCima = yBaixo + altura + DIAMETRO_PASSARO * 2f;
     }
 
     private void initCorpoCima() {
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(largura, alturaCima);
+        shape.setAsBox(largura / 2, altura / 2);
         corpoCima = Util.criarCorpo(mundo, BodyDef.BodyType.StaticBody, x, yCima);
         Util.criarForma(corpoCima, shape, OBSTACULO_CIMA);
         shape.dispose();
@@ -52,14 +62,42 @@ public class Obstaculo {
 
     private void initCorpoBaixo() {
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(largura, alturaBaixo);
+        shape.setAsBox(largura / 2, altura / 2);
         corpoBaixo = Util.criarCorpo(mundo, BodyDef.BodyType.StaticBody, x, yBaixo);
         Util.criarForma(corpoBaixo, shape, OBSTACULO_BAIXO);
         shape.dispose();
     }
 
-    public void remover(){
+    public void remover() {
         mundo.destroyBody(corpoCima);
         mundo.destroyBody(corpoBaixo);
+    }
+
+    public float getX() {
+        return x;
+    }
+
+    public float getyCima() {
+        return yCima;
+    }
+
+    public float getyBaixo() {
+        return yBaixo;
+    }
+
+    public Body getCorpoCima() {
+        return corpoCima;
+    }
+
+    public Body getCorpoBaixo() {
+        return corpoBaixo;
+    }
+
+    public float getLargura() {
+        return largura;
+    }
+
+    public float getAltura() {
+        return altura;
     }
 }
