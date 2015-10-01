@@ -6,7 +6,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.World;
 
-import static com.grupointegrado.flappyBird.Constantes.PIXELS;
+import static com.grupointegrado.flappyBird.Constantes.PIXELS_METRO;
 
 /**
  * Created by Douglas on 24/09/2015.
@@ -15,7 +15,7 @@ public class Passaro {
 
     public static final String CORPO_PASSARO = "CORPO_PASSARO";
     private final float TEMPO_PULANDO_MAXIMO = 0.5f;
-    public static final float DIAMETRO_PASSARO = 40 / PIXELS;
+    public static final float DIAMETRO_PASSARO = 40 / PIXELS_METRO;
 
 
     private final World mundo;
@@ -35,7 +35,7 @@ public class Passaro {
         CircleShape shape = new CircleShape();
         shape.setRadius(DIAMETRO_PASSARO / 2);
         float x = 0;
-        float y = (camera.viewportWidth / PIXELS) / 2;
+        float y = (camera.viewportHeight / 2) / PIXELS_METRO;
         corpo = Util.criarCorpo(mundo, BodyDef.BodyType.DynamicBody, x, y);
         Util.criarForma(corpo, shape, CORPO_PASSARO);
         shape.dispose();
@@ -45,8 +45,6 @@ public class Passaro {
         return corpo;
     }
 
-    float menor, maior;
-
     public void atualizar(float delta) {
         if (pulando) {
             tempoPulando += delta;
@@ -54,12 +52,12 @@ public class Passaro {
             tempoPulando = 0;
         }
         pulando = false;
-        atualizarVelocidade(delta);
+        atualizarVelocidade();
         atualizarRotacao();
     }
 
-    private void atualizarVelocidade(float delta) {
-        corpo.setLinearVelocity(70 * delta, corpo.getLinearVelocity().y);
+    private void atualizarVelocidade() {
+        corpo.setLinearVelocity(1, corpo.getLinearVelocity().y);
     }
 
     private void atualizarRotacao() {
@@ -76,7 +74,7 @@ public class Passaro {
         pulando = true;
         if (tempoPulando < TEMPO_PULANDO_MAXIMO) {
             corpo.setLinearVelocity(corpo.getLinearVelocity().x, 0);
-            corpo.applyForceToCenter(0, (5 / delta), false);
+            corpo.applyForceToCenter(0, 250, false);
         }
     }
 }

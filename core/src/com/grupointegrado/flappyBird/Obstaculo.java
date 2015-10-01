@@ -7,7 +7,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
-import static com.grupointegrado.flappyBird.Constantes.PIXELS;
+import static com.grupointegrado.flappyBird.Constantes.PIXELS_METRO;
 import static com.grupointegrado.flappyBird.Passaro.DIAMETRO_PASSARO;
 
 /**
@@ -24,6 +24,7 @@ public class Obstaculo {
     private float x, yCima, yBaixo;
     private Body corpoCima, corpoBaixo;
     private float largura, altura;
+    private boolean passou = false;
 
     public Obstaculo(World mundo, OrthographicCamera camera, Obstaculo ultimoObstaculo) {
         this.mundo = mundo;
@@ -36,13 +37,13 @@ public class Obstaculo {
     }
 
     private void initPosicao() {
-        largura = 20 / PIXELS;
-        altura = (camera.viewportHeight / PIXELS);
+        largura = 20 / PIXELS_METRO;
+        altura = (camera.viewportHeight / PIXELS_METRO);
 
         float inicialX = 0;
         if (ultimoObstaculo != null)
             inicialX = ultimoObstaculo.getX();
-        x = inicialX + (camera.viewportWidth / 2) / PIXELS;
+        x = inicialX + (camera.viewportWidth / 2) / PIXELS_METRO;
 
         float parcela = altura / 6;
 
@@ -99,5 +100,13 @@ public class Obstaculo {
 
     public float getAltura() {
         return altura;
+    }
+
+    public boolean isPassou() {
+        return passou;
+    }
+
+    public void setPassou(boolean passou) {
+        this.passou = passou;
     }
 }
