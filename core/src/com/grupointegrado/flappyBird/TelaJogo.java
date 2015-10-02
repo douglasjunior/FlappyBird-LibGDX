@@ -6,7 +6,9 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -24,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 
+import static com.grupointegrado.flappyBird.Constantes.ALTURA_BORDA;
 import static com.grupointegrado.flappyBird.Constantes.ESCALA;
 import static com.grupointegrado.flappyBird.Constantes.FPS;
 import static com.grupointegrado.flappyBird.Constantes.PIXELS_METRO;
@@ -43,7 +46,6 @@ public class TelaJogo extends TelaBase {
     private Body borda1;
     private boolean iniciou = false;
     private float larguraBorda;
-    private float alturaBorda;
     private Array<Obstaculo> obstaculos = new Array<Obstaculo>();
     private int pontuacao = 0;
 
@@ -53,7 +55,12 @@ public class TelaJogo extends TelaBase {
 
     private Music musicaFundo;
     private Sound somAsas;
+    private Sound somGameover;
     private boolean gameover = false;
+
+    private SpriteBatch pintor;
+    private Texture texturaFundo;
+    private Texture texturaChao;
 
     public TelaJogo(MainGame game) {
         super(game);
@@ -64,13 +71,20 @@ public class TelaJogo extends TelaBase {
         camera = new OrthographicCamera(Gdx.graphics.getWidth() / ESCALA, Gdx.graphics.getHeight() / ESCALA);
         cameraInfo = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         debug = new Box2DDebugRenderer();
+        pintor = new SpriteBatch();
 
+        initTexturas();
         initMundo();
         initPassaro();
         initBordas();
         initAudio();
         initFontes();
         initInformacoes();
+    }
+
+    private void initTexturas() {
+        texturaFundo = new Texture("sprites/bg.png");
+        texturaChao = new Texture("sprites/ground.png");
     }
 
     private void initFontes() {
@@ -104,6 +118,8 @@ public class TelaJogo extends TelaBase {
         musicaFundo.setVolume(0.3f);
 
         somAsas = Gdx.audio.newSound(Gdx.files.internal("songs/wing.ogg"));
+
+        somGameover = Gdx.audio.newSound(Gdx.files.internal("songs/game-over.mp3"));
     }
 
     private void initMundo() {
@@ -134,6 +150,8 @@ public class TelaJogo extends TelaBase {
     private void detectarColisao(Fixture fixtureA, Fixture fixtureB) {
         if (Passaro.CORPO_PASSARO.equals(fixtureA.getUserData()) ||
                 Passaro.CORPO_PASSARO.equals(fixtureB.getUserData())) {
+            if (!gameover)
+                somGameover.play(1);
             gameover = true;
             System.out.println(fixtureA.getUserData() + " ... " + fixtureB.getUserData());
         }
@@ -154,6 +172,8 @@ public class TelaJogo extends TelaBase {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if (gameover) {
+            if (musicaFundo.isPlaying())
+                musicaFundo.stop();
             passaro.getCorpo().setFixedRotation(false);
             mundo.step(1f / FPS, 6, 2);
         } else {
@@ -168,6 +188,13 @@ public class TelaJogo extends TelaBase {
             }
             atualizarCamera();
         }
+
+        pintor.begin();
+        pintor.setProjectionMatrix(cameraInfo.combined);
+        pintor.draw(texturaFundo, 0, 0, cameraInfo.viewportWidth, cameraInfo.viewportHeight);
+        pintor.draw(texturaChao, 0, ALTURA_BORDA * PIXELS_METRO - texturaChao.getHeight(), cameraInfo.viewportWidth, texturaChao.getHeight());
+        passaro.pintar(pintor, camera, cameraInfo);
+        pintor.end();
 
         atualizarInformacoes();
         palco.act(delta);
@@ -235,9 +262,9 @@ public class TelaJogo extends TelaBase {
     private void dimensionaBorda() {
         borda1.getFixtureList().clear();
         larguraBorda = camera.viewportWidth / PIXELS_METRO;
-        alturaBorda = 10 / PIXELS_METRO;
+
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(larguraBorda / 2, alturaBorda / 2);
+        shape.setAsBox(larguraBorda / 2, ALTURA_BORDA / 2);
         Util.criarForma(borda1, shape, CORPO_BORDA);
         shape.dispose();
     }
@@ -260,5 +287,8 @@ public class TelaJogo extends TelaBase {
         somAsas.dispose();
         fonte.dispose();
         palco.dispose();
+        texturaFundo.dispose();
+        passaro.dispose();
+        texturaChao.dispose();
     }
 }

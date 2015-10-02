@@ -25,8 +25,8 @@ public class Util {
         FixtureDef def = new FixtureDef();
         def.shape = shape;
         def.density = 1;
-        def.friction = 0.05f;
-        def.restitution = 0.4f;
+        def.friction = 0.06f;
+        def.restitution = 0.3f;
         Fixture fixacao = corpo.createFixture(def);
         fixacao.setUserData(userData);
         return fixacao;
