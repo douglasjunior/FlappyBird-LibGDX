@@ -57,7 +57,7 @@ public class Passaro {
     }
 
     private void atualizarVelocidade() {
-        corpo.setLinearVelocity(1, corpo.getLinearVelocity().y);
+        corpo.setLinearVelocity(1f, corpo.getLinearVelocity().y);
     }
 
     private void atualizarRotacao() {
@@ -70,7 +70,7 @@ public class Passaro {
         }
     }
 
-    public void pular(float delta) {
+    public void pular() {
         pulando = true;
         if (tempoPulando < TEMPO_PULANDO_MAXIMO) {
             corpo.setLinearVelocity(corpo.getLinearVelocity().x, 0);

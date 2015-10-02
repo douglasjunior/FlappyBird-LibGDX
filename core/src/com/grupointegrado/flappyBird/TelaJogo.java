@@ -53,6 +53,7 @@ public class TelaJogo extends TelaBase {
 
     private Music musicaFundo;
     private Sound somAsas;
+    private boolean gameover = false;
 
     public TelaJogo(MainGame game) {
         super(game);
@@ -88,7 +89,7 @@ public class TelaJogo extends TelaBase {
     }
 
     private void initInformacoes() {
-        palco = new Stage(new FillViewport(cameraInfo.viewportWidth, cameraInfo.viewportHeight,cameraInfo));
+        palco = new Stage(new FillViewport(cameraInfo.viewportWidth, cameraInfo.viewportHeight, cameraInfo));
 
         Label.LabelStyle estilo = new Label.LabelStyle();
         estilo.font = fonte;
@@ -133,6 +134,7 @@ public class TelaJogo extends TelaBase {
     private void detectarColisao(Fixture fixtureA, Fixture fixtureB) {
         if (Passaro.CORPO_PASSARO.equals(fixtureA.getUserData()) ||
                 Passaro.CORPO_PASSARO.equals(fixtureB.getUserData())) {
+            gameover = true;
             System.out.println(fixtureA.getUserData() + " ... " + fixtureB.getUserData());
         }
     }
@@ -151,28 +153,32 @@ public class TelaJogo extends TelaBase {
         Gdx.gl.glClearColor(.25f, .25f, .25f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        capturaTeclas(delta);
-
-        if (iniciou) {
-            if (!musicaFundo.isPlaying())
-                musicaFundo.play();
-            passaro.atualizar(delta);
+        if (gameover) {
+            passaro.getCorpo().setFixedRotation(false);
             mundo.step(1f / FPS, 6, 2);
-            atualizarBorda();
-            atualizarObstaculos();
-            atualizarInformacoes();
-            palco.act(delta);
-            palco.draw();
+        } else {
+            capturaTeclas(delta);
+            if (iniciou) {
+                if (!musicaFundo.isPlaying())
+                    musicaFundo.play();
+                passaro.atualizar(delta);
+                mundo.step(1f / FPS, 6, 2);
+                atualizarBorda();
+                atualizarObstaculos();
+            }
+            atualizarCamera();
         }
 
-        atualizarCamera();
+        atualizarInformacoes();
+        palco.act(delta);
+        palco.draw();
 
-        debug.render(mundo, camera.combined.scl(PIXELS_METRO));
+        debug.render(mundo, camera.combined.cpy().scl(PIXELS_METRO));
     }
 
     private void atualizarInformacoes() {
         lbPontuacao.setText("Pontuação: " + pontuacao);
-        lbPontuacao.setPosition(10 , palco.getHeight() - lbPontuacao.getPrefHeight() - 10);
+        lbPontuacao.setPosition(10, palco.getHeight() - lbPontuacao.getPrefHeight() - 10);
     }
 
     private void atualizarObstaculos() {
@@ -210,7 +216,7 @@ public class TelaJogo extends TelaBase {
     private void capturaTeclas(float delta) {
         if (Gdx.input.isTouched()) {
             iniciou = true;
-            passaro.pular(delta);
+            passaro.pular();
             if (Gdx.input.justTouched()) {
                 somAsas.play(1);
             }
