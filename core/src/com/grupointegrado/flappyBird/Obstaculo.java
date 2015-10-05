@@ -9,8 +9,9 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
-import static com.grupointegrado.flappyBird.Constantes.ALTURA_BORDA;
-import static com.grupointegrado.flappyBird.Constantes.PIXELS_METRO;
+import static com.grupointegrado.flappyBird.Util.ALTURA_BORDA;
+import static com.grupointegrado.flappyBird.Util.PIXELS_METRO;
+
 
 /**
  * Created by douglas on 30/09/15.
@@ -75,6 +76,18 @@ public class Obstaculo {
         shape.dispose();
     }
 
+    public void renderizar(SpriteBatch batch) {
+        batch.setProjectionMatrix(camera.combined.cpy());
+
+        float x = (corpoCima.getPosition().x - largura / 2) * PIXELS_METRO;
+        float y = (corpoCima.getPosition().y - altura / 2) * PIXELS_METRO;
+        batch.draw(texturaObstaculoCima, x, y, largura * PIXELS_METRO, altura * PIXELS_METRO);
+
+        x = (corpoBaixo.getPosition().x - largura / 2) * PIXELS_METRO;
+        y = (corpoBaixo.getPosition().y - altura / 2) * PIXELS_METRO;
+        batch.draw(texturaObstaculoBaixo, x, y, largura * PIXELS_METRO, altura * PIXELS_METRO);
+    }
+
     public void remover() {
         mundo.destroyBody(corpoCima);
         mundo.destroyBody(corpoBaixo);
@@ -116,15 +129,4 @@ public class Obstaculo {
         this.passou = passou;
     }
 
-    public void pintar(SpriteBatch pintor) {
-        pintor.setProjectionMatrix(camera.combined.cpy());
-
-        float x = (corpoCima.getPosition().x - largura / 2) * PIXELS_METRO;
-        float y = (corpoCima.getPosition().y - altura / 2) * PIXELS_METRO;
-        pintor.draw(texturaObstaculoCima, x, y, largura * PIXELS_METRO, altura * PIXELS_METRO);
-
-        x = (corpoBaixo.getPosition().x - largura / 2) * PIXELS_METRO;
-        y = (corpoBaixo.getPosition().y - altura / 2) * PIXELS_METRO;
-        pintor.draw(texturaObstaculoBaixo, x, y, largura * PIXELS_METRO, altura * PIXELS_METRO);
-    }
 }

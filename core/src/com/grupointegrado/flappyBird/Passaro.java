@@ -11,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 
-import static com.grupointegrado.flappyBird.Constantes.PIXELS_METRO;
+import static com.grupointegrado.flappyBird.Util.PIXELS_METRO;
 
 /**
  * Created by Douglas on 24/09/2015.
@@ -23,26 +23,25 @@ public class Passaro {
 
     private final World mundo;
     private final OrthographicCamera camera;
+    private Texture[] texturaPassaro;
     private Body corpo;
     private float tempoPulando;
     private float tempoEstagio;
     private boolean pulando = false;
-    private Texture[] texturaPassaro = new Texture[3];
+
     private Sprite spritePassaro;
     private int estagio = 0;
 
-    public Passaro(World world, OrthographicCamera camera) {
+    public Passaro(World world, OrthographicCamera camera, Texture[] texturaPassaro) {
         this.mundo = world;
         this.camera = camera;
+        this.texturaPassaro = texturaPassaro;
 
         initCorpo();
         initTextura();
     }
 
     private void initTextura() {
-        texturaPassaro[0] = new Texture("sprites/bird-1.png");
-        texturaPassaro[1] = new Texture("sprites/bird-2.png");
-        texturaPassaro[2] = new Texture("sprites/bird-3.png");
         spritePassaro = new Sprite(texturaPassaro[1]);
     }
 
@@ -99,7 +98,7 @@ public class Passaro {
 
     private void atualizarRotacao() {
         if (corpo.getLinearVelocity().y > 0) {
-            corpo.setTransform(corpo.getPosition(), (float) Math.toRadians(15));
+            corpo.setTransform(corpo.getPosition(), (float) Math.toRadians(10));
         } else if (corpo.getLinearVelocity().y < 0) {
             corpo.setTransform(corpo.getPosition(), (float) Math.toRadians(-15));
         } else {
@@ -115,13 +114,7 @@ public class Passaro {
         }
     }
 
-    public void dispose() {
-        for (Texture text : texturaPassaro) {
-            text.dispose();
-        }
-    }
-
-    public void pintar(SpriteBatch pintor) {
+    public void renderizar(SpriteBatch pintor) {
         pintor.setProjectionMatrix(camera.combined.cpy());
         Vector2 posicao = corpo.getPosition();
         spritePassaro.setTexture(texturaPassaro[estagio]);

@@ -26,10 +26,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 
-import static com.grupointegrado.flappyBird.Constantes.ALTURA_BORDA;
-import static com.grupointegrado.flappyBird.Constantes.ESCALA;
-import static com.grupointegrado.flappyBird.Constantes.FPS;
-import static com.grupointegrado.flappyBird.Constantes.PIXELS_METRO;
+import static com.grupointegrado.flappyBird.Util.ALTURA_BORDA;
+import static com.grupointegrado.flappyBird.Util.ESCALA;
+import static com.grupointegrado.flappyBird.Util.FPS;
+import static com.grupointegrado.flappyBird.Util.PIXELS_METRO;
 
 /**
  * Created by Douglas on 24/09/2015.
@@ -58,7 +58,8 @@ public class TelaJogo extends TelaBase {
     private Sound somGameover;
     private boolean gameover = false;
 
-    private SpriteBatch pintor;
+    private SpriteBatch batch;
+    private Texture[] texturaPassaro = new Texture[3];
     private Texture texturaFundo;
     private Texture texturaChao;
     private Texture texturaObstaculoCima;
@@ -75,7 +76,7 @@ public class TelaJogo extends TelaBase {
         camera = new OrthographicCamera(Gdx.graphics.getWidth() / ESCALA, Gdx.graphics.getHeight() / ESCALA);
         cameraInfo = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         debug = new Box2DDebugRenderer();
-        pintor = new SpriteBatch();
+        batch = new SpriteBatch();
 
         initTexturas();
         initMundo();
@@ -87,6 +88,9 @@ public class TelaJogo extends TelaBase {
     }
 
     private void initTexturas() {
+        texturaPassaro[0] = new Texture("sprites/bird-1.png");
+        texturaPassaro[1] = new Texture("sprites/bird-2.png");
+        texturaPassaro[2] = new Texture("sprites/bird-3.png");
         texturaFundo = new Texture("sprites/bg.png");
         texturaChao = new Texture("sprites/ground.png");
         texturaObstaculoCima = new Texture("sprites/toptube.png");
@@ -165,12 +169,11 @@ public class TelaJogo extends TelaBase {
     }
 
     private void initPassaro() {
-        passaro = new Passaro(mundo, camera);
+        passaro = new Passaro(mundo, camera, texturaPassaro);
     }
 
     private void initBordas() {
-        borda1 = Util.criarCorpo(mundo, BodyDef.BodyType.StaticBody, -larguraBorda, 0);
-        dimensionaBorda();
+        borda1 = Util.criarCorpo(mundo, BodyDef.BodyType.StaticBody, 0, 0);
     }
 
     @Override
@@ -178,6 +181,36 @@ public class TelaJogo extends TelaBase {
         Gdx.gl.glClearColor(.25f, .25f, .25f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        atualizar(delta);
+
+        //renderizar(delta);
+
+        palco.act(delta);
+        palco.draw();
+
+        debug.render(mundo, camera.combined.cpy().scl(PIXELS_METRO));
+    }
+
+    private void renderizar(float delta) {
+        batch.begin();
+
+        batch.setProjectionMatrix(cameraInfo.combined);
+        batch.draw(texturaFundo, 0, 0, cameraInfo.viewportWidth, cameraInfo.viewportHeight);
+
+        passaro.renderizar(batch);
+        for (Obstaculo obs : obstaculos) {
+            obs.renderizar(batch);
+        }
+
+        batch.setProjectionMatrix(cameraInfo.combined);
+        batch.draw(texturaChao, 0, ALTURA_BORDA * PIXELS_METRO - texturaChao.getHeight(), cameraInfo.viewportWidth, texturaChao.getHeight());
+        if (gameover)
+            batch.draw(texturaGameover, cameraInfo.viewportWidth / 2 - texturaGameover.getWidth() / 2, cameraInfo.viewportHeight / 2);
+
+        batch.end();
+    }
+
+    private void atualizar(float delta) {
         if (gameover) {
             if (musicaFundo.isPlaying())
                 musicaFundo.stop();
@@ -196,27 +229,6 @@ public class TelaJogo extends TelaBase {
             atualizarCamera();
         }
         atualizarInformacoes();
-        pintor.begin();
-
-        pintor.setProjectionMatrix(cameraInfo.combined);
-        pintor.draw(texturaFundo, 0, 0, cameraInfo.viewportWidth, cameraInfo.viewportHeight);
-
-        passaro.pintar(pintor);
-        for (Obstaculo obs : obstaculos) {
-            obs.pintar(pintor);
-        }
-
-        pintor.setProjectionMatrix(cameraInfo.combined);
-        pintor.draw(texturaChao, 0, ALTURA_BORDA * PIXELS_METRO - texturaChao.getHeight(), cameraInfo.viewportWidth, texturaChao.getHeight());
-        if (gameover)
-            pintor.draw(texturaGameover, cameraInfo.viewportWidth / 2 - texturaGameover.getWidth() / 2, cameraInfo.viewportHeight / 2);
-
-        pintor.end();
-
-        palco.act(delta);
-        palco.draw();
-
-        debug.render(mundo, camera.combined.cpy().scl(PIXELS_METRO));
     }
 
     private void atualizarInformacoes() {
@@ -247,7 +259,7 @@ public class TelaJogo extends TelaBase {
 
     private void atualizarBorda() {
         Vector2 posicao = passaro.getCorpo().getPosition();
-        borda1.setTransform(posicao.x, 0, 0);
+        borda1.setTransform(posicao.x + passaro.getLargura() / 2, 0, 0);
     }
 
     private void atualizarCamera() {
@@ -277,7 +289,6 @@ public class TelaJogo extends TelaBase {
     private void dimensionaBorda() {
         borda1.getFixtureList().clear();
         larguraBorda = camera.viewportWidth / PIXELS_METRO;
-
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(larguraBorda / 2, ALTURA_BORDA / 2);
         Util.criarForma(borda1, shape, CORPO_BORDA);
@@ -302,11 +313,13 @@ public class TelaJogo extends TelaBase {
         somAsas.dispose();
         fonte.dispose();
         palco.dispose();
+        for (Texture text : texturaPassaro) {
+            text.dispose();
+        }
         texturaFundo.dispose();
         texturaChao.dispose();
         texturaObstaculoCima.dispose();
         texturaObstaculoBaixo.dispose();
         texturaGameover.dispose();
-        passaro.dispose();
     }
 }
