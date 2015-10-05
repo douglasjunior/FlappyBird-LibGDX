@@ -2,7 +2,7 @@
   "rigidBodies": [
     {
       "name": "bird",
-      "imagePath": "../sprites/bird.png",
+      "imagePath": "sprites/bird-1.png",
       "origin": {
         "x": 0,
         "y": 0

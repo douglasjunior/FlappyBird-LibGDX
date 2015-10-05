@@ -61,6 +61,10 @@ public class TelaJogo extends TelaBase {
     private SpriteBatch pintor;
     private Texture texturaFundo;
     private Texture texturaChao;
+    private Texture texturaObstaculoCima;
+    private Texture texturaObstaculoBaixo;
+    private Texture texturaGameover;
+
 
     public TelaJogo(MainGame game) {
         super(game);
@@ -85,6 +89,9 @@ public class TelaJogo extends TelaBase {
     private void initTexturas() {
         texturaFundo = new Texture("sprites/bg.png");
         texturaChao = new Texture("sprites/ground.png");
+        texturaObstaculoCima = new Texture("sprites/toptube.png");
+        texturaObstaculoBaixo = new Texture("sprites/bottomtube.png");
+        texturaGameover = new Texture("sprites/gameover.png");
     }
 
     private void initFontes() {
@@ -174,29 +181,38 @@ public class TelaJogo extends TelaBase {
         if (gameover) {
             if (musicaFundo.isPlaying())
                 musicaFundo.stop();
-            passaro.getCorpo().setFixedRotation(false);
-            mundo.step(1f / FPS, 6, 2);
         } else {
-            capturaTeclas(delta);
-            if (iniciou) {
-                if (!musicaFundo.isPlaying())
-                    musicaFundo.play();
-                passaro.atualizar(delta);
-                mundo.step(1f / FPS, 6, 2);
-                atualizarBorda();
-                atualizarObstaculos();
-            }
+            if (!musicaFundo.isPlaying())
+                musicaFundo.play();
+        }
+        capturaTeclas(delta);
+        passaro.getCorpo().setFixedRotation(!gameover);
+        passaro.atualizar(delta, !gameover);
+        if (iniciou)
+            mundo.step(1f / FPS, 6, 2);
+        if (!gameover) {
+            atualizarBorda();
+            atualizarObstaculos();
             atualizarCamera();
         }
-
+        atualizarInformacoes();
         pintor.begin();
+
         pintor.setProjectionMatrix(cameraInfo.combined);
         pintor.draw(texturaFundo, 0, 0, cameraInfo.viewportWidth, cameraInfo.viewportHeight);
+
+        passaro.pintar(pintor);
+        for (Obstaculo obs : obstaculos) {
+            obs.pintar(pintor);
+        }
+
+        pintor.setProjectionMatrix(cameraInfo.combined);
         pintor.draw(texturaChao, 0, ALTURA_BORDA * PIXELS_METRO - texturaChao.getHeight(), cameraInfo.viewportWidth, texturaChao.getHeight());
-        passaro.pintar(pintor, camera, cameraInfo);
+        if (gameover)
+            pintor.draw(texturaGameover, cameraInfo.viewportWidth / 2 - texturaGameover.getWidth() / 2, cameraInfo.viewportHeight / 2);
+
         pintor.end();
 
-        atualizarInformacoes();
         palco.act(delta);
         palco.draw();
 
@@ -209,23 +225,22 @@ public class TelaJogo extends TelaBase {
     }
 
     private void atualizarObstaculos() {
-        if (obstaculos.size < 3) {
+        if (obstaculos.size < 4) {
             Obstaculo ultimoObstaculo = null;
             if (obstaculos.size > 0) {
                 ultimoObstaculo = obstaculos.peek();
             }
-            Obstaculo obstaculo = new Obstaculo(mundo, camera, ultimoObstaculo);
+            Obstaculo obstaculo = new Obstaculo(mundo, camera, ultimoObstaculo, texturaObstaculoCima, texturaObstaculoBaixo);
             obstaculos.add(obstaculo);
         }
         for (Obstaculo obstaculo : obstaculos) {
-            float inicioCameraX = (camera.position.x - camera.viewportWidth / 2) / PIXELS_METRO;
+            float inicioCameraX = (camera.position.x - camera.viewportWidth / 2) / PIXELS_METRO - obstaculo.getLargura();
             if (inicioCameraX > obstaculo.getX()) {
                 obstaculo.remover();
                 obstaculos.removeValue(obstaculo, true);
             } else if (!obstaculo.isPassou() && passaro.getCorpo().getPosition().x > obstaculo.getX()) {
                 obstaculo.setPassou(true);
                 pontuacao++;
-                System.out.println("pontuacao: " + pontuacao);
             }
         }
     }
@@ -236,7 +251,7 @@ public class TelaJogo extends TelaBase {
     }
 
     private void atualizarCamera() {
-        camera.position.x = passaro.getCorpo().getPosition().x * PIXELS_METRO;
+        camera.position.x = (passaro.getCorpo().getPosition().x + passaro.getLargura() / 2) * PIXELS_METRO;
         camera.update();
     }
 
@@ -288,7 +303,10 @@ public class TelaJogo extends TelaBase {
         fonte.dispose();
         palco.dispose();
         texturaFundo.dispose();
-        passaro.dispose();
         texturaChao.dispose();
+        texturaObstaculoCima.dispose();
+        texturaObstaculoBaixo.dispose();
+        texturaGameover.dispose();
+        passaro.dispose();
     }
 }
