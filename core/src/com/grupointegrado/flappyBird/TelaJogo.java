@@ -183,7 +183,7 @@ public class TelaJogo extends TelaBase {
 
         atualizar(delta);
 
-        //renderizar(delta);
+        renderizar(delta);
 
         palco.act(delta);
         palco.draw();
@@ -268,7 +268,7 @@ public class TelaJogo extends TelaBase {
     }
 
     private void capturaTeclas(float delta) {
-        if (Gdx.input.isTouched()) {
+        if (!gameover && Gdx.input.isTouched()) {
             iniciou = true;
             passaro.pular();
             if (Gdx.input.justTouched()) {
