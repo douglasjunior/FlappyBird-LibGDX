@@ -9,7 +9,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
-import static com.grupointegrado.flappyBird.Util.ALTURA_BORDA;
+import static com.grupointegrado.flappyBird.Util.ALTURA_CHAO;
 import static com.grupointegrado.flappyBird.Util.PIXELS_METRO;
 
 
@@ -47,17 +47,17 @@ public class Obstaculo {
         largura = 40 / PIXELS_METRO;
         altura = (camera.viewportHeight / PIXELS_METRO);
 
-        float inicialX = 0;
+        float inicialX = largura;
         if (ultimoObstaculo != null)
             inicialX = ultimoObstaculo.getX();
         x = inicialX + (camera.viewportWidth / 2) / PIXELS_METRO;
 
-        float parcela = (altura - ALTURA_BORDA) / 6;
+        float parcela = (altura - ALTURA_CHAO) / 6;
 
         int multiplicador = MathUtils.random(1, 3);
 
-        yBaixo = ALTURA_BORDA + parcela * multiplicador - altura / 2;
-        yCima = yBaixo + altura + 2f;
+        yBaixo = ALTURA_CHAO + (parcela * multiplicador) - (altura / 2);
+        yCima = yBaixo + altura + 2f; // 2f espaço entre os canos
     }
 
     private void initCorpoCima() {

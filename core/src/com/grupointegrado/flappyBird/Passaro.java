@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 
@@ -50,6 +51,9 @@ public class Passaro {
         float y = (camera.viewportHeight / 2) / PIXELS_METRO;
         corpo = Util.criarCorpo(mundo, BodyDef.BodyType.DynamicBody, x, y);
 
+//        CircleShape shape = new CircleShape();
+//        shape.setRadius(18 / PIXELS_METRO);
+//        Util.criarForma(corpo,shape, CORPO_PASSARO);
         FixtureDef def = new FixtureDef();
         def.density = 1;
         def.friction = 0.4f;
