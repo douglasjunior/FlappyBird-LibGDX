@@ -77,8 +77,6 @@ public class Obstaculo {
     }
 
     public void renderizar(SpriteBatch batch) {
-        batch.setProjectionMatrix(camera.combined.cpy());
-
         float x = (corpoCima.getPosition().x - largura / 2) * PIXELS_METRO;
         float y = (corpoCima.getPosition().y - altura / 2) * PIXELS_METRO;
         batch.draw(texturaObstaculoCima, x, y, largura * PIXELS_METRO, altura * PIXELS_METRO);

@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 
@@ -20,15 +19,12 @@ import static com.grupointegrado.flappyBird.Util.PIXELS_METRO;
 public class Passaro {
 
     public static final String CORPO_PASSARO = "CORPO_PASSARO";
-    private final float TEMPO_PULANDO_MAXIMO = 0.5f;
 
     private final World mundo;
     private final OrthographicCamera camera;
     private Texture[] texturaPassaro;
     private Body corpo;
-    private float tempoPulando;
     private float tempoEstagio;
-    private boolean pulando = false;
 
     private Sprite spritePassaro;
     private int estagio = 0;
@@ -51,9 +47,6 @@ public class Passaro {
         float y = (camera.viewportHeight / 2) / PIXELS_METRO;
         corpo = Util.criarCorpo(mundo, BodyDef.BodyType.DynamicBody, x, y);
 
-//        CircleShape shape = new CircleShape();
-//        shape.setRadius(18 / PIXELS_METRO);
-//        Util.criarForma(corpo,shape, CORPO_PASSARO);
         FixtureDef def = new FixtureDef();
         def.density = 1;
         def.friction = 0.4f;
@@ -68,17 +61,11 @@ public class Passaro {
     }
 
     public void atualizar(float delta, boolean movimentar) {
-        if (pulando) {
-            tempoPulando += delta;
-        } else {
-            tempoPulando = 0;
-        }
         if (movimentar) {
             atualizarVelocidade();
             atualizarRotacao();
         }
         atualizarEstagio(delta);
-        pulando = false;
     }
 
     private void atualizarEstagio(float delta) {
@@ -111,15 +98,11 @@ public class Passaro {
     }
 
     public void pular() {
-        pulando = true;
-        if (tempoPulando < TEMPO_PULANDO_MAXIMO) {
-            corpo.setLinearVelocity(corpo.getLinearVelocity().x, 0);
-            corpo.applyForceToCenter(0, 100, false);
-        }
+        corpo.setLinearVelocity(corpo.getLinearVelocity().x, 0);
+        corpo.applyForceToCenter(0, 100, false);
     }
 
     public void renderizar(SpriteBatch pintor) {
-        pintor.setProjectionMatrix(camera.combined.cpy());
         Vector2 posicao = corpo.getPosition();
         spritePassaro.setTexture(texturaPassaro[estagio]);
         spritePassaro.setPosition(posicao.x * PIXELS_METRO, posicao.y * PIXELS_METRO);

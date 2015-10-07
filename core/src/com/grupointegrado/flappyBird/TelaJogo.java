@@ -73,6 +73,8 @@ public class TelaJogo extends TelaBase {
     private Texture texturaObstaculoBaixo;
     private Texture texturaGameover;
     private Texture texturaBotao;
+    private boolean sair = false;
+    private boolean pulando = false;
 
     public TelaJogo(MainGame game) {
         super(game);
@@ -206,42 +208,50 @@ public class TelaJogo extends TelaBase {
     }
 
     @Override
-    public void render(float delta) {
+    public synchronized void render(float delta) {
         Gdx.gl.glClearColor(.25f, .25f, .25f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        atualizar(delta);
-        renderizar(delta);
+        capturaTeclas();
 
-        palco.act(delta);
-        palco.draw();
+        if (!sair) {
+            atualizar(delta);
+            renderizar();
 
-        debug.render(mundo, camera.combined.cpy().scl(PIXELS_METRO));
+            palco.act(delta);
+            palco.draw();
+
+            //debug.render(mundo, camera.combined.cpy().scl(PIXELS_METRO));
+        }
     }
 
-    private void renderizar(float delta) {
+    private void renderizar() {
         batch.begin();
 
         batch.setProjectionMatrix(cameraInfo.combined);
         batch.draw(texturaFundo, 0, 0, cameraInfo.viewportWidth, cameraInfo.viewportHeight);
 
+        batch.setProjectionMatrix(camera.combined);
         passaro.renderizar(batch);
         for (Obstaculo obs : obstaculos) {
             obs.renderizar(batch);
         }
-
-        batch.setProjectionMatrix(cameraInfo.combined);
-        if (gameover)
-            batch.draw(texturaGameover, cameraInfo.viewportWidth / 2 - texturaGameover.getWidth() / 2, cameraInfo.viewportHeight / 2);
-
-        batch.setProjectionMatrix(camera.combined);
         spriteChao1.draw(batch);
         spriteChao2.draw(batch);
+
+        if (gameover) {
+            batch.setProjectionMatrix(cameraInfo.combined);
+            batch.draw(texturaGameover, cameraInfo.viewportWidth / 2 - texturaGameover.getWidth() / 2, cameraInfo.viewportHeight / 2);
+        }
 
         batch.end();
     }
 
     private void atualizar(float delta) {
+        if (pulando) {
+            passaro.pular();
+            somAsas.play(1);
+        }
         if (gameover) {
             if (musicaFundo.isPlaying())
                 musicaFundo.stop();
@@ -249,7 +259,6 @@ public class TelaJogo extends TelaBase {
             if (!musicaFundo.isPlaying())
                 musicaFundo.play();
         }
-        capturaTeclas(delta);
         passaro.getCorpo().setFixedRotation(!gameover);
         passaro.atualizar(delta, !gameover);
         if (iniciou) {
@@ -311,16 +320,15 @@ public class TelaJogo extends TelaBase {
         camera.update();
     }
 
-    private void capturaTeclas(float delta) {
-        if (iniciou && !gameover && Gdx.input.isTouched()) {
-            passaro.pular();
-            if (Gdx.input.justTouched()) {
-                somAsas.play(1);
-            }
+    private void capturaTeclas() {
+        pulando = false;
+        if (iniciou && !gameover && Gdx.input.justTouched()) {
+            pulando = true;
         }
-//        if (gameover && Gdx.input.justTouched()){
-//            game.setScreen(new TelaMenu(game));
-//        }
+        if (gameover && Gdx.input.justTouched()) {
+            sair = true;
+            game.setScreen(new TelaJogo(game));
+        }
     }
 
     @Override
@@ -352,11 +360,11 @@ public class TelaJogo extends TelaBase {
     }
 
     @Override
-    public void dispose() {
-        batch.dispose();
+    public synchronized void dispose() {
         debug.dispose();
         mundo.dispose();
         palco.dispose();
+        batch.dispose();
         fonte.dispose();
         for (Texture text : texturaPassaro) {
             text.dispose();
