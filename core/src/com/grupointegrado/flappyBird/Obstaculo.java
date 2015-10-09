@@ -50,7 +50,7 @@ public class Obstaculo {
         float inicialX = largura;
         if (ultimoObstaculo != null)
             inicialX = ultimoObstaculo.getX();
-        x = inicialX + (camera.viewportWidth / 2) / PIXELS_METRO;
+        x = inicialX + 4;
 
         float parcela = (altura - ALTURA_CHAO) / 6;
 

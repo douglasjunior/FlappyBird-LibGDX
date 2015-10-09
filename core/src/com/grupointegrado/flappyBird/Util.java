@@ -1,5 +1,6 @@
 package com.grupointegrado.flappyBird;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
@@ -12,7 +13,7 @@ import com.badlogic.gdx.physics.box2d.World;
  */
 public class Util {
 
-    public static final float ESCALA = 2f; // escala da camera
+    public static final float ESCALA = 1.4f + Gdx.graphics.getDensity(); // escala da camera
     public static final float PIXELS_METRO = 32f; // pixels por metro
     public static final float FPS = 60;
     public static final float ALTURA_CHAO = 80 / PIXELS_METRO;

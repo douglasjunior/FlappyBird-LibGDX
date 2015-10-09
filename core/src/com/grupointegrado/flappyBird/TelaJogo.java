@@ -114,11 +114,11 @@ public class TelaJogo extends TelaBase {
 
     private void initFontes() {
         FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        param.size = 24;
+        param.size = (int) ((cameraInfo.viewportHeight * 24f) / 640f);
         param.color = Color.WHITE;
         param.shadowColor = Color.BLACK;
-        param.shadowOffsetX = 2;
-        param.shadowOffsetY = 2;
+        param.shadowOffsetX = (int) (2f * Gdx.graphics.getDensity());
+        param.shadowOffsetY = (int) (2f * Gdx.graphics.getDensity());
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/roboto.ttf"));
 
@@ -147,6 +147,7 @@ public class TelaJogo extends TelaBase {
                 btnPlay.remove();
             }
         });
+
         palco.addActor(btnPlay);
 
         maiorPontuacao = Gdx.app.getPreferences(PREFERENCIAS).getInteger(MAIOR_PONTUACAO);
@@ -205,7 +206,7 @@ public class TelaJogo extends TelaBase {
         chao = Util.criarCorpo(mundo, BodyDef.BodyType.StaticBody, 0, 0);
 
         float inicioCamera = 0 - camera.viewportWidth / 2;
-        float altura = (ALTURA_CHAO * PIXELS_METRO) / ESCALA;
+        float altura = (ALTURA_CHAO * PIXELS_METRO) / 2;
 
         spriteChao1 = new Sprite(texturaChao);
         spriteChao1.setBounds(inicioCamera, 0, camera.viewportWidth, altura);
@@ -344,7 +345,7 @@ public class TelaJogo extends TelaBase {
 
     }
 
-    private void salvarPontuacao(){
+    private void salvarPontuacao() {
         Preferences pref = Gdx.app.getPreferences(PREFERENCIAS);
         int maiorPontuacao = pref.getInteger(MAIOR_PONTUACAO);
         if (pontuacao > maiorPontuacao) {
