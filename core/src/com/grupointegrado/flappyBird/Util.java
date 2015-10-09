@@ -15,8 +15,9 @@ public class Util {
 
     public static final float ESCALA = 1.4f + Gdx.graphics.getDensity(); // escala da camera
     public static final float PIXELS_METRO = 32f; // pixels por metro
-    public static final float FPS = 60;
-    public static final float ALTURA_CHAO = 80 / PIXELS_METRO;
+    public static final float FPS = 60f;
+    public static final float ALTURA_CHAO = 80f / PIXELS_METRO;
+    public static final float ALTURA_TELA = 640f; // altura padrão da tela
 
     public static Body criarCorpo(World mundo, BodyDef.BodyType tipo, float x, float y) {
         BodyDef def = new BodyDef();
