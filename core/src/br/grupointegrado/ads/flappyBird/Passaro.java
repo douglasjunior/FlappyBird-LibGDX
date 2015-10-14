@@ -1,4 +1,4 @@
-package com.grupointegrado.flappyBird;
+package br.grupointegrado.ads.flappyBird;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -11,7 +11,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 
-import static com.grupointegrado.flappyBird.Util.PIXELS_METRO;
+import static br.grupointegrado.ads.flappyBird.Util.PIXELS_METRO;
 
 /**
  * Created by Douglas on 24/09/2015.
@@ -52,7 +52,7 @@ public class Passaro {
         def.friction = 0.4f;
         def.restitution = 0.3f;
 
-        BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal("physics/bird.json"));
+        br.grupointegrado.ads.flappyBird.BodyEditorLoader loader = new br.grupointegrado.ads.flappyBird.BodyEditorLoader(Gdx.files.internal("physics/bird.json"));
         loader.attachFixture(corpo, "bird", def, 1, CORPO_PASSARO);
     }
 

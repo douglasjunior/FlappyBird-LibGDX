@@ -1,4 +1,4 @@
-package com.grupointegrado.flappyBird;
+package br.grupointegrado.ads.flappyBird;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -9,8 +9,8 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
-import static com.grupointegrado.flappyBird.Util.ALTURA_CHAO;
-import static com.grupointegrado.flappyBird.Util.PIXELS_METRO;
+import static br.grupointegrado.ads.flappyBird.Util.ALTURA_CHAO;
+import static br.grupointegrado.ads.flappyBird.Util.PIXELS_METRO;
 
 
 /**

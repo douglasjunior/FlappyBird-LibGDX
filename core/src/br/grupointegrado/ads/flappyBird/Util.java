@@ -1,4 +1,4 @@
-package com.grupointegrado.flappyBird;
+package br.grupointegrado.ads.flappyBird;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.Body;

@@ -1,10 +1,10 @@
-package com.grupointegrado.flappyBird.desktop;
+package br.grupointegrado.ads.flappyBird.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.grupointegrado.flappyBird.MainGame;
+import br.grupointegrado.ads.flappyBird.MainGame;
 
-import static com.grupointegrado.flappyBird.Util.FPS;
+import static br.grupointegrado.ads.flappyBird.Util.FPS;
 
 public class DesktopLauncher {
     public static void main(String[] arg) {

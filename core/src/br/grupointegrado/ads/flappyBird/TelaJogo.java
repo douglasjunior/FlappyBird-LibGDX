@@ -1,4 +1,4 @@
-package com.grupointegrado.flappyBird;
+package br.grupointegrado.ads.flappyBird;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
@@ -32,11 +32,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 
-import static com.grupointegrado.flappyBird.Util.ALTURA_CHAO;
-import static com.grupointegrado.flappyBird.Util.ALTURA_TELA;
-import static com.grupointegrado.flappyBird.Util.ESCALA;
-import static com.grupointegrado.flappyBird.Util.FPS;
-import static com.grupointegrado.flappyBird.Util.PIXELS_METRO;
+import static br.grupointegrado.ads.flappyBird.Util.ALTURA_CHAO;
+import static br.grupointegrado.ads.flappyBird.Util.ALTURA_TELA;
+import static br.grupointegrado.ads.flappyBird.Util.ESCALA;
+import static br.grupointegrado.ads.flappyBird.Util.FPS;
+import static br.grupointegrado.ads.flappyBird.Util.PIXELS_METRO;
 
 /**
  * Created by Douglas on 24/09/2015.
