@@ -173,11 +173,11 @@ public class TelaJogo extends TelaBase {
         musicaFundo.setLooping(true);
         musicaFundo.setVolume(0.2f);
 
-        somAsas = Gdx.audio.newSound(Gdx.files.internal("songs/wing.ogg"));
+        somAsas = Gdx.audio.newSound(Gdx.files.internal("songs/wing.mp3"));
 
         somGameover = Gdx.audio.newSound(Gdx.files.internal("songs/game-over.mp3"));
 
-        somPonto = Gdx.audio.newSound(Gdx.files.internal("songs/coin.ogg"));
+        somPonto = Gdx.audio.newSound(Gdx.files.internal("songs/coin.mp3"));
     }
 
     private void initMundo() {
