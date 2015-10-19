@@ -243,9 +243,6 @@ public class TelaJogo extends TelaBase {
             atualizar(delta);
             renderizar();
 
-            palco.act(delta);
-            palco.draw();
-
             //debug.render(mundo, camera.combined.cpy().scl(PIXELS_METRO));
         }
     }
@@ -273,9 +270,12 @@ public class TelaJogo extends TelaBase {
         }
 
         batch.end();
+
+        palco.draw();
     }
 
     private void atualizar(float delta) {
+        palco.act(delta);
         if (pulando) {
             passaro.pular();
             somAsas.play(1);
