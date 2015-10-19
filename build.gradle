@@ -69,8 +69,8 @@ project(":android") {
 project(":core") {
     apply plugin: "java"
 
-
     dependencies {
+        compile files('libs/bodyeditor-loader.jar')
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
