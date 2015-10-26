@@ -33,6 +33,8 @@ public class TelaJogo extends TelaBase {
 
         initChao();
         initPassaro();
+
+        new Obstaculo(mundo, camera, null);
     }
 
     private void initChao() {
@@ -93,7 +95,7 @@ public class TelaJogo extends TelaBase {
 
     private void atualizarCamera() {
         camera.position.x =
-                (passaro.getCorpo().getPosition().x + 34 / Util.PIXEL_METRO ) * Util.PIXEL_METRO;
+                (passaro.getCorpo().getPosition().x + 34 / Util.PIXEL_METRO) * Util.PIXEL_METRO;
         camera.update();
     }
 
@@ -101,10 +103,8 @@ public class TelaJogo extends TelaBase {
      * Atualiza a posição do chão para acompanhar o pássaro
      */
     private void atualizarChao() {
-        float largura = camera.viewportWidth / Util.PIXEL_METRO;
-        Vector2 posicao = chao.getPosition();
-        posicao.x = largura / 2;
-        chao.setTransform(posicao, 0);
+        Vector2 posicao = passaro.getCorpo().getPosition();
+        chao.setTransform(posicao.x, 0, 0);
     }
 
     @Override
@@ -112,6 +112,7 @@ public class TelaJogo extends TelaBase {
         camera.setToOrtho(false, width / Util.ESCALA, height / Util.ESCALA);
         camera.update();
         redimensionaChao();
+
     }
 
     /**
