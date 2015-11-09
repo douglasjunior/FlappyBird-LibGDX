@@ -366,9 +366,7 @@ public class TelaJogo extends TelaBase {
 
     private void reiniciar() {
         sair = true;
-        game.setScreen(new TelaJogo(game));
-
-
+        game.setScreen(new TelaInicio(game));
     }
 
     private void salvarPontuacao() {
@@ -415,6 +413,7 @@ public class TelaJogo extends TelaBase {
         palco.dispose();
         batch.dispose();
         fonte.dispose();
+        fontePontuacao.dispose();
         for (Texture text : texturaPassaro) {
             text.dispose();
         }

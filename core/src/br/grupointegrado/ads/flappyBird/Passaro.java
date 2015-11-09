@@ -52,7 +52,7 @@ public class Passaro {
         def.friction = 0.4f;
         def.restitution = 0.3f;
 
-        br.grupointegrado.ads.flappyBird.BodyEditorLoader loader = new br.grupointegrado.ads.flappyBird.BodyEditorLoader(Gdx.files.internal("physics/bird.json"));
+        BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal("physics/bird.json"));
         loader.attachFixture(corpo, "bird", def, 1, CORPO_PASSARO);
     }
 
