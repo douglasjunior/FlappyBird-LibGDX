@@ -3,12 +3,10 @@ package br.grupointegrado.ads.flappyBird;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
 
 /**
@@ -50,8 +48,28 @@ public class Passaro {
      *
      * @param delta
      */
-    public void atualizar(float delta) {
-        atualizarVelocidade();
+    public void atualizar(float delta, boolean movimentar) {
+        if (movimentar) {
+            atualizarVelocidade();
+            atualizarRotacao();
+        }
+    }
+
+    private void atualizarRotacao() {
+        float velocidadeY = corpo.getLinearVelocity().y;
+        float rotacao = 0;
+        if (velocidadeY < 0) {
+            // caindo
+            rotacao = -15;
+        } else if (velocidadeY > 0) {
+            // subindo
+            rotacao = 10;
+        } else {
+            // reto
+            rotacao = 0;
+        }
+        rotacao = (float) Math.toRadians(rotacao); // convertendo graus para radiano
+        corpo.setTransform(corpo.getPosition(), rotacao);
     }
 
     private void atualizarVelocidade() {
@@ -63,7 +81,7 @@ public class Passaro {
      */
     public void pular() {
         corpo.setLinearVelocity(corpo.getLinearVelocity().x, 0);
-        corpo.applyForceToCenter(0, 100, false);
+        corpo.applyForceToCenter(0, 115, false);
     }
 
     public Body getCorpo() {
