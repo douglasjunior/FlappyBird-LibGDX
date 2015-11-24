@@ -4,5 +4,3 @@ Jogo desenvolvido com os alunos de Tópicos Especiais 2015-2 da Faculdade Integr
 --------
 
 [Assistir Gameplay](https://www.youtube.com/watch?v=HEjjmlk5F7U)
-
-[Disponível na Play Store](https://play.google.com/store/apps/details?id=br.grupointegrado.ads.flappyBird.android)
