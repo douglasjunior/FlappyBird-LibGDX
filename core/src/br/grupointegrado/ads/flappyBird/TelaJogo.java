@@ -411,7 +411,8 @@ public class TelaJogo extends TelaBase {
      */
     private void atualizarChao() {
         Vector2 posicao = passaro.getCorpo().getPosition();
-        chao.setTransform(posicao.x, 0, 0);
+        float larguraPassaro = (passaro.getWidth() / Util.PIXEL_METRO);
+        chao.setTransform(posicao.x + larguraPassaro, 0, 0);
 
         float inicioCamera = (camera.position.x - camera.viewportWidth / 2) -
                 camera.viewportWidth;
